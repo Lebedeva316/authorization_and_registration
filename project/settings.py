@@ -25,8 +25,14 @@ SECRET_KEY = 'django-insecure-*d3j92geob2jw(*b6q44av4)=06aq!vb&jyt)$3c8=3&on5!#=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Application definition
 
@@ -41,6 +47,16 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'fpages',
     'news',
+    'django_filters',
+    'sign',
+    'protect',
+
+    #Авторизация через гугл
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # ... include the providers you want to enable:
+    'allauth.socialaccount.providers.google',
 ]
 
 SITE_ID=1
@@ -69,9 +85,18 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
@@ -131,3 +156,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [ BASE_DIR / 'static']
 
+LOGIN_URL =  '/accounts/login/' #адрес для перенаправления на страницу входа в систему
+
+LOGIN_REDIRECT_URL = '/news/news_list' # адрес перенаправления после успешного входа
+
+ACCOUNT_FORMS = {'signup': 'sign.models.BasicSignupForm'}
